@@ -6,18 +6,18 @@ import 'store.dart';
 
 class AppStoreProvider extends StatelessWidget {
   final Widget child;
-  final AppStore appStore;
+  final AppStore? appStore;
 
   const AppStoreProvider({
     super.key,
-    required this.appStore,
+    this.appStore,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<AppState>(
-      store: appStore.createStore(),
+      store: appStore?.createStore() ?? AppStore().createStore(),
       child: child,
     );
   }

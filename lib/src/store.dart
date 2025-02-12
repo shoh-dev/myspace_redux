@@ -1,20 +1,28 @@
+import 'dart:developer';
+
 import 'package:async_redux/async_redux.dart';
-import 'package:myspace_redux/src/environment.dart';
+import 'package:flutter/material.dart';
 import 'package:myspace_redux/src/state.dart';
 
-class AppStore {
-  final AppState state;
-  final Environment? env;
+import 'di/di.dart';
 
-  const AppStore({
-    required this.state,
-    this.env,
-  });
+class AppStore {
+  const AppStore();
+
+  void register<T extends Object>(T di) {
+    DependencyInjection.register<T>(di);
+  }
 
   Store<AppState> createStore() {
+    log('Creating store...');
     return Store<AppState>(
-      initialState: state,
-      environment: env,
+      initialState: AppState(),
     );
+  }
+}
+
+extension ContextHelperStore on BuildContext {
+  T getDependency<T extends Object>() {
+    return DependencyInjection.get<T>();
   }
 }
