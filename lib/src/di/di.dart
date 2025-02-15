@@ -1,15 +1,21 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 abstract class DependencyInjection {
   static final _getIt = GetIt.instance;
 
-  static void register<T extends Object>(T di) {
+  static void registerSingleton<T extends Object>(T di, {bool deregisterIfExists = false}) {
     if (_getIt.isRegistered<T>()) {
-      _getIt.unregister<T>();
+      if (deregisterIfExists) {
+        _getIt.unregister<T>();
+      } else {
+        return;
+      }
     }
-    _getIt.registerLazySingleton<T>(() => di);
+
+    _getIt.registerSingleton<T>(di);
 
     log("Registered $T");
   }
@@ -24,5 +30,11 @@ abstract class DependencyInjection {
 
   static void unregister<T extends Object>() {
     _getIt.unregister<T>();
+  }
+}
+
+extension ContextHelperDi on BuildContext {
+  T getDependency<T extends Object>() {
+    return DependencyInjection.get<T>();
   }
 }
